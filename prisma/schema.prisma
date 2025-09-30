@@ -32,6 +32,8 @@ model Stream{
   active Boolean @default(true)
   url String
   extractedID String
+  title String
+  thumbnails String
   userId String
   user User @relation(fields: [userId], references: [id])
   upvotes Upvotes[] 

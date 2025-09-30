@@ -1,6 +1,8 @@
 import prisma from "@/app/lib/db";
+import { get } from "http";
 import { NextRequest, NextResponse } from "next/server";
-import zod, { string } from 'zod'
+import zod, { string } from 'zod';
+
 
 const requestInput=zod.object({
     creatorId:zod.string(),
@@ -36,12 +38,26 @@ export async function POST(req:NextRequest) {
 
         const extractedID=data.url.split("?v=")[1];
 
+        async function getVideoDetail(apiKey:string, videoId:string) {
+           const url= `https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails,statistics,status,player&id=${videoId}&key=${apiKey}`;
+           const res=await fetch(url);
+           const data=await res.json();
+           return data
+        }
+        const videoDetail=await getVideoDetail(process.env.API_KEY as string,extractedID);
+        console.log(videoDetail.items)
+        console.log("the thumbnails are")
+        console.log( videoDetail.items[0].snippet.thumbnails.medium)
+        const title=videoDetail.items[0].snippet.title;
+        const thumbnails=videoDetail.items[0].snippet.thumbnails.medium
         const stream =await prisma.stream.create({
             data:{
                 userId:data.creatorId,
                 url:data.url,
                 type:"youtube",
-                extractedID:extractedID
+                extractedID:extractedID,
+                title:title,
+                thumbnails:thumbnails 
             }
         })
 

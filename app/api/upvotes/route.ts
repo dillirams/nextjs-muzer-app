@@ -7,7 +7,7 @@ const requestBody= zod.object({
     streamId:zod.string()
 })
 
-export default async function POST(req:NextRequest) {
+export  async function POST(req:NextRequest) {
     const session=await getServerSession();
     const data=await req.json();
 
@@ -33,11 +33,16 @@ export default async function POST(req:NextRequest) {
             status:403
         })
     }else{
-        await prisma.upvotes.create({
+      const stream=  await prisma.upvotes.create({
             data:{
                 streamId:data.streamId,
                 userId:user.id
             }
+        })
+
+        return NextResponse.json({
+            message:'stream created successfully',
+            stream:stream
         })
     }
     }catch(e){
