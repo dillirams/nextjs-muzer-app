@@ -49,7 +49,7 @@ export async function POST(req:NextRequest) {
         console.log("the thumbnails are")
         console.log( videoDetail.items[0].snippet.thumbnails.medium)
         const title=videoDetail.items[0].snippet.title;
-        const thumbnails=videoDetail.items[0].snippet.thumbnails.medium
+        const thumbnails=videoDetail.items[0].snippet.thumbnails.medium.url
         const stream =await prisma.stream.create({
             data:{
                 userId:data.creatorId,
