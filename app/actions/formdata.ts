@@ -24,19 +24,22 @@ export async function addStream(formData:FormData) {
     const isYoutubeUrl=Youtube_regex.test(youtubeUrl as string);
     if(!isYoutubeUrl)throw new Error("enter right youtube url");
     const extractedID=youtubeUrl.split("?v=")[1];
+    console.log(extractedID)
 
     async function getVideoDetail(apiKey:string, videoId:string) {
 
            const url= `https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails,statistics,status,player&id=${videoId}&key=${apiKey}`;
+        
            const res=await fetch(url);
            const data=await res.json();
+           
            return data
         }
 
      const videoDetail=await getVideoDetail(process.env.API_KEY as string,extractedID);
-        // console.log(videoDetail.items)
-        // console.log("the thumbnails are")
-        // console.log( videoDetail.items[0].snippet.thumbnails.medium)
+        console.log(videoDetail)
+        console.log("the thumbnails are")
+        console.log( videoDetail.items[0].snippet.thumbnails.medium)
         const title=videoDetail.items[0].snippet.title;
         const thumbnails=videoDetail.items[0].snippet.thumbnails.medium.url
 

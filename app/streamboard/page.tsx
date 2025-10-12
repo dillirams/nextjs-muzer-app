@@ -3,9 +3,10 @@ import { Addstream } from "../component/addstream";
 import prisma from "../lib/db";
 import { Suspense } from "react";
 import { GetStream } from "../component/getstream";
+import { authOptions } from "../lib/auth";
 
 export default async function StreamBoard(){
-    const session= await getServerSession();
+    const session= await getServerSession(authOptions);
     console.log("the session is")
     console.log(session)
     if(!session) throw Error("you are not logged in")
