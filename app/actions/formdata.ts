@@ -4,6 +4,7 @@ import { getServerSession } from "next-auth"
 import prisma from "../lib/db";
 import { error } from "console";
 import { yo } from "zod/v4/locales";
+import { revalidatePath } from "next/cache";
 
 
 const Youtube_regex= RegExp(/^https?:\/\/(?:www\.)?youtube\.com\/watch\?v=([A-Za-z0-9_-]{11})(?:&.*)?$/)
@@ -53,6 +54,8 @@ export async function addStream(formData:FormData) {
                 thumbnails:thumbnails 
             }
         })
+
+        revalidatePath('/streamboard')
 
         if(stream){
             return {
