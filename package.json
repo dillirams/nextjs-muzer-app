@@ -8,7 +8,9 @@
     "start": "next start"
   },
   "dependencies": {
+    "@distube/ytdl-core": "^4.16.12",
     "@prisma/client": "^6.16.2",
+    "axios": "^1.12.2",
     "lucide-react": "^0.546.0",
     "next": "15.5.4",
     "next-auth": "^4.24.11",

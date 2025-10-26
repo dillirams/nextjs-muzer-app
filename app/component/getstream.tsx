@@ -1,8 +1,10 @@
 "use client";
-import { use } from "react";
-import { Trash2, ArrowUp } from "lucide-react";
+import { use, useEffect } from "react";
+import { Trash2, ArrowUp, CloudLightning } from "lucide-react";
 import { deleteStream } from "../actions/deletestream";
 import { useStreamStore } from "../store/create";
+
+import axios from "axios";
 
 enum StreamType {
   spotify,
@@ -24,17 +26,35 @@ export function GetStream({
   }[]>;
 }) {
   const allStream = use(stream);
-  const {setExtractedId,setYoutubeTitle}=useStreamStore();
+  const {setExtractedId,setYoutubeTitle,setYoutubeUrl,setAllstream, setCurrentIndex,currentIndex}=useStreamStore();
+  
+  
+
+  useEffect(()=>{
+    if(allStream.length){
+      //@ts-ignore
+      setAllstream(allStream)
+    }
+  },[allStream,setAllstream])
+
+  const handleClick=async ({item,index}:{
+    item:(typeof allStream)[0],
+    index:number
+  })=>{
+         setExtractedId(item.extractedID);
+          setYoutubeTitle(item.title);
+         setYoutubeUrl(item.url);
+         setCurrentIndex(index)
+         console.log("index",index)
+  }
 
   return (
     <ul className="space-y-3">
-      {allStream.map((item) => (
-        <li onClick={()=>{
-          setExtractedId(item.extractedID);
-          setYoutubeTitle(item.title)
-        }}
+      {allStream.map((item,index) => (
+        <li onClick={()=>{handleClick({item,index})}}
           key={item.id}
-          className="flex items-center justify-between gap-3 bg-zinc-900 hover:bg-zinc-800 transition rounded-xl p-3 shadow-sm"
+          className={`flex items-center justify-between gap-3 mt-2 bg-zinc-900 hover:bg-zinc-800 transition rounded-xl p-3 shadow-sm
+            ${currentIndex===index&&"border-2 border-white-500"}`}
         >
           {/* Left: Thumbnail + Title */}
           <div className="flex items-center gap-3 w-[70%] sm:w-[75%] md:w-[80%] overflow-hidden">
