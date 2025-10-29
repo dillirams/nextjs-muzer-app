@@ -48,7 +48,7 @@ export function Addstream() {
       </div>
 
       {/* Now Playing Section */}
-          <NowPlaying />
+         
     </div>
   );
 }

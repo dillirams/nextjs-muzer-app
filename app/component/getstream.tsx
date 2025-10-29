@@ -1,10 +1,12 @@
 "use client";
-import { use, useEffect } from "react";
-import { Trash2, ArrowUp, CloudLightning } from "lucide-react";
+import { use, useEffect, useState } from "react";
+import { Trash2, Heart } from "lucide-react";
 import { deleteStream } from "../actions/deletestream";
 import { useStreamStore } from "../store/create";
 
 import axios from "axios";
+import { tr } from "zod/locales";
+import { addToMyPlaylist } from "../actions/addtomyplaylist";
 
 enum StreamType {
   spotify,
@@ -13,6 +15,7 @@ enum StreamType {
 
 export function GetStream({
   stream,
+  variant='normal'
 }: {
   stream: Promise<{
     id: string;
@@ -24,11 +27,19 @@ export function GetStream({
     thumbnails: string;
     userId: string;
   }[]>;
+  variant:"normal"|"shared"
+  
 }) {
   const allStream = use(stream);
-  const {setExtractedId,setYoutubeTitle,setYoutubeUrl,setAllstream, setCurrentIndex,currentIndex}=useStreamStore();
+  const {setExtractedId,setYoutubeTitle,setYoutubeUrl,setAllstream, setCurrentIndex,currentIndex, setCreaterId}=useStreamStore();
+  const[likedItem,setLikedItem]=useState<{[id:string]:boolean}>({})
   
-  
+  const toggleLike=(id:string)=>{
+    setLikedItem((prev)=>({
+      ...prev,
+      [id]:!prev[id]
+    }))
+  }
 
   useEffect(()=>{
     if(allStream.length){
@@ -42,6 +53,7 @@ export function GetStream({
     index:number
   })=>{
          setExtractedId(item.extractedID);
+         
           setYoutubeTitle(item.title);
          setYoutubeUrl(item.url);
          setCurrentIndex(index)
@@ -73,22 +85,38 @@ export function GetStream({
 
           {/* Right: Buttons */}
           <div className="flex items-center gap-2 sm:gap-3">
-            <button
+            <button onClick={()=>{toggleLike(item.id)}}
               className="text-gray-400 hover:text-indigo-400 transition p-1 sm:p-2 rounded-lg"
               title="Move up"
             >
-              <ArrowUp size={18} />
+             <Heart size={18} className={`${likedItem[item.id]?"text-red-500 fill-red-500":""}`}/>
             </button>
 
+           {variant === "normal" ? (
             <button
               className="text-gray-400 hover:text-red-400 transition p-1 sm:p-2 rounded-lg"
-              title="Remove" onClick={async()=>{
-               const res= await deleteStream(item.id);
-               alert(res?.message)
+              title="Remove"
+              onClick={async () => {
+                const res = await deleteStream(item.id);
+                alert(res?.message);
               }}
             >
               <Trash2 size={18} />
             </button>
+          ) : (
+            <button
+              className="text-gray-400 hover:text-green-400 transition p-1 sm:p-2 rounded-lg"
+              title="Add to my playlist"
+              onClick={async () => {
+              const res=  await addToMyPlaylist(item)
+                alert(res.message);
+              }}
+            >
+              ➕
+            </button>
+          )}
+
+
           </div>
         </li>
       ))}

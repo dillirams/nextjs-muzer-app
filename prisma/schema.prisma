@@ -22,10 +22,10 @@ model User{
   email String @unique
   name String
   provider String
-  stream Stream[]
+  streams Stream[] @relation("UserStreamsById")
+  streamsByEmail Stream[] @relation("UserStreamsByEmail")
   upvotes Upvotes[]
 }
-
 model Stream{
   id String @id @default(uuid())
   type StreamType
@@ -35,9 +35,12 @@ model Stream{
   title String
   thumbnails String
   userId String
-  user User @relation(fields: [userId], references: [id])
+  email String 
+  user User @relation("UserStreamsById", fields: [userId], references: [id])
+  userEmail User @relation("UserStreamsByEmail", fields: [email], references: [email])
   upvotes Upvotes[] 
 }
+
 
 model Upvotes{
   id String @id @default(uuid())

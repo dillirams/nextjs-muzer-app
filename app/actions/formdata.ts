@@ -51,6 +51,7 @@ export async function addStream(formData:FormData) {
                 type:"youtube",
                 extractedID:extractedID,
                 title:title,
+                email:session?.user?.email as string,
                 thumbnails:thumbnails 
             }
         })

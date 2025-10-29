@@ -2,11 +2,13 @@ import { create,  } from "zustand";
 
 interface StreamState{
     extractedId: string|null;
+    createrId:string|null;
     youtubeTitle: string|null;
     youtubeUrl:string|null;
     allStreams:any[],
     currentIndex:number
     setExtractedId:(id:string)=>void;
+    setCreaterId:(id:string)=>void;
     setYoutubeTitle:(title:string)=>void;
     setYoutubeUrl:(url:string)=>void;
     setAllstream:(stream:[])=>void;
@@ -16,11 +18,13 @@ interface StreamState{
 
 export const useStreamStore=create<StreamState>((set,get)=>({
     extractedId:null,
+    createrId:null,
     youtubeTitle:null,
     youtubeUrl:null,
     allStreams:[],
     currentIndex:0,
     setExtractedId: (id) => set({ extractedId: id }),
+    setCreaterId:(id)=>set({createrId:id}),
     setYoutubeTitle: (title) => set({ youtubeTitle: title }),
    setYoutubeUrl:(url)=>set({youtubeUrl:url}),
    setAllstream:(stream)=>set({allStreams:stream}),
