@@ -1,0 +1,39 @@
+version: "3.8"
+
+services:
+  postgres:
+    image: postgres
+    environment:
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      -   DATABASE_URL=${DATABASE_URL}
+    ports: 
+     - "5433:5432"
+    
+    volumes:
+     - muzer_volume:/var/lib/postgresql/data
+
+  muzerapp:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.yml
+    ports:
+      - "3000:3000"
+    
+
+    depends_on:
+      - postgres
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+      - NEXTAUTH_URL=${NEXTAUTH_URL} 
+    command: >
+     sh -c "npx prisma migrate deploy && npm run start"
+
+
+
+volumes:
+ muzer_volume:
+
+networks:
+    muzer_network:
+      
+

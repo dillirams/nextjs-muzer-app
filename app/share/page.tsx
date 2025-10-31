@@ -2,12 +2,15 @@ import { getServerSession } from "next-auth"
 import { authOptions } from "../lib/auth"
 import { redirect } from "next/navigation";
 
-export default async function ShareLink({searchParams,}:{
-    searchParams:{userId?:string}
-}) {
+interface SharePageprops{
+    searchParams?:{userId?:string}
+}
+
+export default async function ShareLink({searchParams}:SharePageprops
+) {
     const session=await getServerSession(authOptions);
 
-    if(!searchParams.userId){
+    if(!searchParams?.userId){
         redirect("/")
     }   
     
