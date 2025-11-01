@@ -38,7 +38,7 @@ jobs:
             ssh -o StrictHostKeyChecking=no -i ~/ssh_key ubuntu@13.61.186.145 << EOF
               set -e
               IMAGE=dillax/muzer_app:${GITHUB_SHA}
-              sudo docker muzer_app || true
+              sudo docker stop muzer_app || true
               sudo docker rm muzer_app || true
               
               sudo docker run --name muzer_app -d -p 3000:3000 \$IMAGE
