@@ -25,6 +25,8 @@ model User{
   streams Stream[] @relation("UserStreamsById")
   streamsByEmail Stream[] @relation("UserStreamsByEmail")
   upvotes Upvotes[]
+  room Joinroom[]
+  joinedRooms     UserRoom[] // relation through join table
 }
 model Stream{
   id String @id @default(uuid())
@@ -39,6 +41,7 @@ model Stream{
   user User @relation("UserStreamsById", fields: [userId], references: [id])
   userEmail User @relation("UserStreamsByEmail", fields: [email], references: [email])
   upvotes Upvotes[] 
+  
 }
 
 
@@ -48,7 +51,32 @@ model Upvotes{
   streamId String
   user User @relation(fields: [userId], references: [id])
   stream Stream @relation(fields: [streamId], references: [id])
+  
   @@unique([userId, streamId])
+}
+model Joinroom {
+  id        String      @id @default(uuid())
+  roomId    String      @unique
+  creatorId String
+  creator User @relation(fields: [creatorId],references: [id])
+  createdAt DateTime    @default(now())
+
+  members   UserRoom[]
+}
+model UserRoom {
+  id        String    @id @default(uuid())
+  userId    String
+  roomId    String
+  url String
+  extractedID String
+  title String
+  thumbnails String
+  joinedAt  DateTime  @default(now())
+
+  user      User      @relation(fields: [userId], references: [id])
+  room      Joinroom  @relation(fields: [roomId], references: [id])
+
+  @@unique([userId, roomId]) 
 }
 
 enum StreamType{

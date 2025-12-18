@@ -10,27 +10,27 @@ import { SharePopover } from "../component/share";
 import { NowPlaying } from "../component/playing";
 
 
-export default async function StreamBoard({searchParams}:{searchParams:{sharedFrom?:string}}) {
+export default async function StreamBoard({ searchParams }: { searchParams: { sharedFrom?: string } }) {
   const session = await getServerSession(authOptions);
   if (!session) throw Error("You are not logged in");
 
-  
-    
 
-  
-  const myStreams =  prisma.stream.findMany({
-    where:{
-      email:session.user?.email
+
+
+
+  const myStreams = prisma.stream.findMany({
+    where: {
+      email: session.user?.email
     }
   });
 
-  const friendStreams=searchParams.sharedFrom?prisma.stream.findMany({
-    where:{userId:searchParams.sharedFrom}
-  }):null;
+  const friendStreams = searchParams.sharedFrom ? prisma.stream.findMany({
+    where: { userId: searchParams.sharedFrom }
+  }) : null;
 
 
   return (
-    
+
     <div className="bg-zinc-950">
       <Appbar />
       <div className="min-h-screen text-white flex flex-col md:flex-row">
@@ -54,18 +54,18 @@ export default async function StreamBoard({searchParams}:{searchParams:{sharedFr
             <h2 className="text-xl font-semibold mb-4 text-indigo-400">Friend’s Playlist</h2>
             <Suspense fallback={<div>Loading shared playlist...</div>}>
               <GetStream stream={friendStreams} variant="shared" />
-        
+
             </Suspense>
-            
-            <NowPlaying/>
+
+            <NowPlaying />
           </div>
-          
+
         )}
 
         {/* If not shared, show Addstream section */}
         {!friendStreams && (
           <div className="md:w-1/3 w-full p-6 flex flex-col justify-between">
-            <Addstream />
+            <Addstream dream={false}/>
           </div>
         )}
       </div>

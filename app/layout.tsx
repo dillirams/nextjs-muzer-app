@@ -32,7 +32,7 @@ export default function RootLayout({
       >
         <Provider>
           {children}
-            <footer className="text-gray-500 text-sm py-4 text-center border-t bg-zinc-900">
+            <footer className="text-gray-500 text-sm py-4 text-center border-t bg-zinc-900 ">
         © {new Date().getFullYear()} Muser. Built by ❤️ Dilli_X.
       </footer>
         </Provider>

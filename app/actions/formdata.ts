@@ -5,11 +5,20 @@ import prisma from "../lib/db";
 import { error } from "console";
 import { yo } from "zod/v4/locales";
 import { revalidatePath } from "next/cache";
+import WebSocket from 'ws';
 
+
+
+
+
+const BACKEND_URL="ws://localhost:8080"
 
 const Youtube_regex= RegExp(/^https?:\/\/(?:www\.)?youtube\.com\/watch\?v=([A-Za-z0-9_-]{11})(?:&.*)?$/)
 
-export async function addStream(formData:FormData) {
+export async function addStream(formData:FormData, dream:Boolean) {
+
+   
+
 
     const session=await getServerSession();
 
@@ -44,7 +53,17 @@ export async function addStream(formData:FormData) {
         const title=videoDetail.items[0].snippet.title;
         const thumbnails=videoDetail.items[0].snippet.thumbnails.medium.url
 
-        const stream =await prisma.stream.create({
+        if(dream){
+           //chat();
+           return{
+            url:youtubeUrl,
+            extractedID:extractedID,
+            title: title,
+            thumbnails:thumbnails
+           }
+
+        }else{
+            const stream =await prisma.stream.create({
             data:{
                 userId:user.id,
                 url:youtubeUrl,
@@ -63,6 +82,12 @@ export async function addStream(formData:FormData) {
                 message:"stream created successfully",
                 stream:stream
             }
+        } 
+
         }
+
+        
+
+        
     
 }
